@@ -2,4 +2,4 @@
 --cqlsh --username cassandra --password cassandra 
 CREATE KEYSPACE demo WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 3};
 user demo;
-create table pessoa (cpf varchar, nome varchar, nasc int, cep varchar, PRIMARY KEY (cpf));
+create table pessoa (cpf varchar, nome varchar, nasc bigint, cep varchar, PRIMARY KEY (cpf));

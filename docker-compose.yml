@@ -1,7 +1,23 @@
 ---
 version: '2.1'
-
 services:
+  nifi:
+    image: apache/nifi:latest
+    volumes:
+      - /tmp:/tmp
+    ports:
+      - 8080:8080
+  cassandra:
+    image: bitnami/cassandra:latest
+    hostname: cassandra
+    ports:
+      - 7000:7000
+      - 7001:7001
+      - 7199:7199
+      - 9042:9042
+      - 9160:9160
+    volumes:
+      - /tmp:/bitnami
   zoo1:
     image: zookeeper:3.4.9
     restart: unless-stopped
@@ -15,8 +31,6 @@ services:
     volumes:
       - ./full-stack/zoo1/data:/data
       - ./full-stack/zoo1/datalog:/datalog
-
-
   kafka1:
     image: confluentinc/cp-kafka:5.3.1
     hostname: kafka1
@@ -125,7 +139,9 @@ services:
       - kafka1
       - kafka-schema-registry
       - kafka-rest-proxy
-
+      - cassandra
+    links: 
+      - cassandra
   kafka-connect-ui:
     image: landoop/kafka-connect-ui:0.9.4
     hostname: kafka-connect-ui
@@ -168,15 +184,3 @@ services:
       SERVER_HTTP_PORT: 9000
     depends_on:
       - zoo1
-  nifi:
-    image: apache/nifi:latest
-    volumes:
-      - /tmp:/tmp
-    ports:
-      - 8080:8080
-  cassandra:
-    image: bitnami/cassandra:latest
-    ports:
-      - 9042:9042
-    volumes:
-      - /tmp:/bitnami
